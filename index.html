@@ -3,20 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Exitoso</title>
+    <title>Verificación de Cuenta</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 50px;
+            padding: 20px;
         }
-        h1 {
+        #message {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+        .success {
             color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+        .error {
+            color: #f44336;
+            background-color: #ffebee;
+        }
+        .loading {
+            color: #2196F3;
         }
     </style>
 </head>
 <body>
-    <h1>¡Registro Exitoso!</h1>
-    <p>Tu cuenta ha sido verificada correctamente. Ahora puedes ingresar a la aplicación.</p>
+    <div id="message" class="loading">Verificando tu cuenta...</div>
+
+    <script>
+        // Inicializa Supabase
+        const supabase = supabase.createClient(
+            'https://xfbmdpxyeombmwqhfzug.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmYm1kcHh5ZW9tYm13cWhmenVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1MTQ1NzgsImV4cCI6MjA1NTA5MDU3OH0.Vs6XLyJyE9usvAr0SXsVwekxqPdIsyspXYoqEINQhts'
+        );
+
+        // Función para verificar el token
+        async function verifyToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const type = urlParams.get('type');
+
+            const messageDiv = document.getElementById('message');
+
+            if (!token || type !== 'signup') {
+                messageDiv.innerHTML = 'Enlace de verificación inválido.';
+                messageDiv.className = 'error';
+                return;
+            }
+
+            try {
+                const { error } = await supabase.auth.verifyOtp({
+                    type: 'signup',
+                    token_hash: token
+                });
+
+                if (error) throw error;
+
+                messageDiv.innerHTML = `
+                    <h1>¡Registro Exitoso!</h1>
+                    <p>Tu cuenta ha sido verificada correctamente.</p>
+                    <p>Ahora puedes ingresar a la aplicación.</p>
+                    <a href="https://mogekoneko.github.io" style="
+                        display: inline-block;
+                        margin-top: 20px;
+                        padding: 10px 20px;
+                        background-color: #4CAF50;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    ">Ir a la aplicación</a>
+                `;
+                messageDiv.className = 'success';
+            } catch (error) {
+                messageDiv.innerHTML = `
+                    <h1>Error de Verificación</h1>
+                    <p>${error.message}</p>
+                    <p>Por favor contacta al soporte técnico.</p>
+                `;
+                messageDiv.className = 'error';
+                console.error('Error verifying email:', error);
+            }
+        }
+
+        // Ejecuta la verificación al cargar la página
+        document.addEventListener('DOMContentLoaded', verifyToken);
+    </script>
 </body>
 </html>
