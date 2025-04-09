@@ -13,6 +13,9 @@
         margin: 0;
         padding: 0;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
       }
 
       header {
@@ -23,15 +26,18 @@
         font-weight: bold;
       }
 
-      header img {
-        width: 120px; /* Ajusta el tamaño de la imagen según lo necesario */
-        margin-bottom: 1rem;
-      }
-
       main {
+        flex: 1;
         padding: 2rem 1rem;
         display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
+      }
+
+      .logo {
+        width: 120px;
+        margin-bottom: 1rem;
       }
 
       #message {
@@ -74,10 +80,15 @@
   </head>
   <body>
     <header>
-      <img src="https://xfbmdpxyeombmwqhfzug.supabase.co/storage/v1/object/public/varias//LOGO_SASA-removebg-preview.png" alt="Logo SASA" />
       Verificación de Cuenta
     </header>
+
     <main>
+      <img
+        src="https://xfbmdpxyeombmwqhfzug.supabase.co/storage/v1/object/public/varias//LOGO_SASA-removebg-preview.png"
+        alt="Logo SASA"
+        class="logo"
+      />
       <div id="message">Procesando verificación...</div>
     </main>
 
