@@ -32,13 +32,12 @@
     <div id="message">Procesando verificación...</div>
 
     <script>
-        // Inicializa Supabase
-        const supabase = supabase.createClient(
+        // Inicializa Supabase correctamente
+        const supabaseClient = window.supabase.createClient(
             'https://xfbmdpxyeombmwqhfzug.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmYm1kcHh5ZW9tYm13cWhmenVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1MTQ1NzgsImV4cCI6MjA1NTA5MDU3OH0.Vs6XLyJyE9usvAr0SXsVwekxqPdIsyspXYoqEINQhts'
         );
 
-        // Función para verificar el token
         async function verifyToken() {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
@@ -53,14 +52,13 @@
             }
 
             try {
-                const { error } = await supabase.auth.verifyOtp({
+                const { error } = await supabaseClient.auth.verifyOtp({
                     type: 'signup',
                     token_hash: token
                 });
 
                 if (error) throw error;
 
-                // ✅ Verificación exitosa
                 messageDiv.innerHTML = `
                     <h1>¡Cuenta verificada con éxito!</h1>
                     <p>Tu correo electrónico ha sido confirmado.</p>
@@ -87,7 +85,6 @@
             }
         }
 
-        // Ejecuta la verificación al cargar la página
         window.onload = verifyToken;
     </script>
 </body>
