@@ -1,91 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación de Cuenta</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verificación de Cuenta - Acceso SASA</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            padding: 20px;
-        }
-        #message {
-            margin: 20px auto;
-            padding: 20px;
-            max-width: 500px;
-            border-radius: 5px;
-        }
-        .success {
-            color: #4CAF50;
-            background-color: #e8f5e9;
-        }
-        .error {
-            color: #f44336;
-            background-color: #ffebee;
-        }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f6f9fc;
+        color: #2169B1;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+
+      header {
+        background: linear-gradient(to right, #B2D4F0, #39A2F8);
+        color: white;
+        padding: 1rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      main {
+        padding: 2rem 1rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      #message {
+        max-width: 500px;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 2px solid #9FC0DB;
+        background-color: white;
+        text-align: center;
+        font-size: 1rem;
+      }
+
+      .success {
+        border-color: #4CAF50;
+        color: #2e7d32;
+      }
+
+      .error {
+        border-color: #f44336;
+        color: #c62828;
+      }
+
+      .btn-link {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 0.75rem 1.5rem;
+        background-color: #2169B1;
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+      }
+
+      .btn-link:hover {
+        background-color: #174f86;
+      }
     </style>
-</head>
-<body>
-    <div id="message">Procesando verificación...</div>
+  </head>
+  <body>
+    <header>Verificación de Cuenta</header>
+    <main>
+      <div id="message">Procesando verificación...</div>
+    </main>
 
     <script>
-        // Inicializa Supabase correctamente
-        const supabaseClient = window.supabase.createClient(
-            'https://xfbmdpxyeombmwqhfzug.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmYm1kcHh5ZW9tYm13cWhmenVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1MTQ1NzgsImV4cCI6MjA1NTA5MDU3OH0.Vs6XLyJyE9usvAr0SXsVwekxqPdIsyspXYoqEINQhts'
-        );
+      const supabaseClient = window.supabase.createClient(
+        'https://xfbmdpxyeombmwqhfzug.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmYm1kcHh5ZW9tYm13cWhmenVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1MTQ1NzgsImV4cCI6MjA1NTA5MDU3OH0.Vs6XLyJyE9usvAr0SXsVwekxqPdIsyspXYoqEINQhts'
+      );
 
-        async function verifyToken() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-            const type = urlParams.get('type');
+      async function verifyToken() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const type = urlParams.get('type');
 
-            const messageDiv = document.getElementById('message');
+        const messageDiv = document.getElementById('message');
 
-            if (!token || type !== 'signup') {
-                messageDiv.innerHTML = '❌ Enlace de verificación inválido.';
-                messageDiv.className = 'error';
-                return;
-            }
-
-            try {
-                const { error } = await supabaseClient.auth.verifyOtp({
-                    type: 'signup',
-                    token_hash: token
-                });
-
-                if (error) throw error;
-
-                messageDiv.innerHTML = `
-                    <h1>¡Cuenta verificada con éxito!</h1>
-                    <p>Tu correo electrónico ha sido confirmado.</p>
-                    <p>Ahora puedes iniciar sesión en la aplicación.</p>
-                    <a href="https://sasa-acceso-host.web.app/" style="
-                        display: inline-block;
-                        margin-top: 20px;
-                        padding: 10px 20px;
-                        background-color: #4CAF50;
-                        color: white;
-                        text-decoration: none;
-                        border-radius: 5px;
-                    ">Ir a la aplicación</a>
-                `;
-                messageDiv.className = 'success';
-            } catch (error) {
-                messageDiv.innerHTML = `
-                    <h1>Error al verificar</h1>
-                    <p>${error.message}</p>
-                    <p>Por favor, contacta al soporte técnico.</p>
-                `;
-                messageDiv.className = 'error';
-                console.error('Error verifying email:', error);
-            }
+        if (!token || type !== 'signup') {
+          messageDiv.innerHTML = '<h2>❌ Enlace inválido</h2><p>El enlace de verificación no es válido.</p>';
+          messageDiv.className = 'error';
+          return;
         }
 
-        window.onload = verifyToken;
+        try {
+          const { error } = await supabaseClient.auth.verifyOtp({
+            type: 'signup',
+            token_hash: token
+          });
+
+          if (error) throw error;
+
+          messageDiv.innerHTML = `
+            <h2>✅ ¡Cuenta verificada!</h2>
+            <p>Tu correo electrónico ha sido confirmado exitosamente.</p>
+            <a href="https://mogekoneko.github.io/acceso_sasa/" class="btn-link">Ir a la aplicación</a>
+          `;
+          messageDiv.className = 'success';
+        } catch (error) {
+          messageDiv.innerHTML = `
+            <h2>❌ Error al verificar</h2>
+            <p>${error.message}</p>
+            <p>Por favor, contacta al soporte técnico.</p>
+          `;
+          messageDiv.className = 'error';
+        }
+      }
+
+      window.onload = verifyToken;
     </script>
-</body>
+  </body>
 </html>
