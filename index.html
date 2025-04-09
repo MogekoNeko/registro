@@ -26,13 +26,10 @@
             color: #f44336;
             background-color: #ffebee;
         }
-        .loading {
-            color: #2196F3;
-        }
     </style>
 </head>
 <body>
-    <div id="message" class="loading">Verificando tu cuenta...</div>
+    <div id="message">Procesando verificación...</div>
 
     <script>
         // Inicializa Supabase
@@ -50,7 +47,7 @@
             const messageDiv = document.getElementById('message');
 
             if (!token || type !== 'signup') {
-                messageDiv.innerHTML = 'Enlace de verificación inválido.';
+                messageDiv.innerHTML = '❌ Enlace de verificación inválido.';
                 messageDiv.className = 'error';
                 return;
             }
@@ -63,10 +60,11 @@
 
                 if (error) throw error;
 
+                // ✅ Verificación exitosa
                 messageDiv.innerHTML = `
-                    <h1>¡Registro Exitoso!</h1>
-                    <p>Tu cuenta ha sido verificada correctamente.</p>
-                    <p>Ahora puedes ingresar a la aplicación.</p>
+                    <h1>¡Cuenta verificada con éxito!</h1>
+                    <p>Tu correo electrónico ha sido confirmado.</p>
+                    <p>Ahora puedes iniciar sesión en la aplicación.</p>
                     <a href="https://mogekoneko.github.io" style="
                         display: inline-block;
                         margin-top: 20px;
@@ -80,9 +78,9 @@
                 messageDiv.className = 'success';
             } catch (error) {
                 messageDiv.innerHTML = `
-                    <h1>Error de Verificación</h1>
+                    <h1>Error al verificar</h1>
                     <p>${error.message}</p>
-                    <p>Por favor contacta al soporte técnico.</p>
+                    <p>Por favor, contacta al soporte técnico.</p>
                 `;
                 messageDiv.className = 'error';
                 console.error('Error verifying email:', error);
@@ -90,7 +88,7 @@
         }
 
         // Ejecuta la verificación al cargar la página
-        document.addEventListener('DOMContentLoaded', verifyToken);
+        window.onload = verifyToken;
     </script>
 </body>
 </html>
